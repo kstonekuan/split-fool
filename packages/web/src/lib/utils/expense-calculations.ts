@@ -157,7 +157,7 @@ export function validateExpenseForm(
 	}
 
 	const parsedAmount = parseFloat(amount);
-	if (!amount || parsedAmount <= 0 || isNaN(parsedAmount)) {
+	if (!amount || parsedAmount <= 0 || Number.isNaN(parsedAmount)) {
 		return { isValid: false, error: "Please enter a valid amount" };
 	}
 

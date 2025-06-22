@@ -11,13 +11,13 @@ export function formatDate(dateString: string): string {
 	// Handle both full ISO dates and YYYY-MM-DD format
 	const date = new Date(dateString);
 
-	if (isNaN(date.getTime())) {
+	if (Number.isNaN(date.getTime())) {
 		// If invalid date, try parsing YYYY-MM-DD format manually
 		const parts = dateString.split("-");
 		if (parts.length === 3) {
 			const [year, month, day] = parts.map(Number);
 			const manualDate = new Date(year, month - 1, day);
-			if (!isNaN(manualDate.getTime())) {
+			if (!Number.isNaN(manualDate.getTime())) {
 				return manualDate.toLocaleDateString();
 			}
 		}

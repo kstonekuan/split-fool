@@ -21,15 +21,23 @@ function handleBackdropClick(event: MouseEvent) {
 		handleCancel();
 	}
 }
+
+function handleKeyDown(event: KeyboardEvent) {
+	if (event.key === "Escape") {
+		handleCancel();
+	}
+}
 </script>
 
 {#if show}
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-[1000] animate-fadeIn sm:items-center" 
      on:click={handleBackdropClick}
+     on:keydown={handleKeyDown}
      role="dialog"
      aria-modal="true"
-     aria-labelledby="modal-title">
-	<div class="bg-white rounded-t-2xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto animate-slideUp sm:rounded-lg sm:w-[90%] sm:animate-slideIn">
+     aria-labelledby="modal-title"
+     tabindex="-1">
+	<div class="bg-white rounded-t-2xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto animate-slideUp sm:rounded-lg sm:w-[90%]">
 		<div class="p-4 border-b border-gray-200 sm:p-6">
 			<h3 id="modal-title" class="text-lg font-semibold text-gray-900 sm:text-xl">{title}</h3>
 		</div>
@@ -86,10 +94,6 @@ function handleBackdropClick(event: MouseEvent) {
 
 .animate-fadeIn {
 	animation: fadeIn 0.2s ease-out;
-}
-
-.animate-slideIn {
-	animation: slideIn 0.2s ease-out;
 }
 
 .animate-slideUp {

@@ -76,7 +76,7 @@ export function validateAmount(amount: string): ValidationResult {
 
 	const parsedAmount = parseFloat(amount);
 
-	if (isNaN(parsedAmount)) {
+	if (Number.isNaN(parsedAmount)) {
 		return { isValid: false, error: "Amount must be a valid number" };
 	}
 

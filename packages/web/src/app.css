@@ -1,10 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Define custom theme colors */
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #64748b;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+}
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 no-underline disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] sm:py-2 sm:min-h-0;
+    @apply inline-flex items-center justify-center px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all duration-200 no-underline disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] py-2 min-h-0;
   }
 
   .btn-primary {
@@ -20,11 +28,11 @@
   }
 
   .btn-small {
-    @apply px-3 py-2 text-xs min-h-[36px] sm:py-1.5 sm:min-h-0;
+    @apply px-3 py-2 text-xs min-h-[36px] py-1.5 sm:min-h-0;
   }
 
   .input {
-    @apply w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary min-h-[44px] sm:py-2 sm:text-sm sm:min-h-0;
+    @apply w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary min-h-[44px] py-2 text-sm min-h-0;
   }
 
   .label {
@@ -44,6 +52,6 @@
   }
 
   .container {
-    @apply max-w-6xl mx-auto px-4 py-6 sm:p-6 lg:p-8;
+    @apply max-w-6xl mx-auto px-4 py-6 p-6 lg:p-8;
   }
 }

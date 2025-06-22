@@ -129,8 +129,9 @@ async function handleAddExpense() {
       </div>
 
       <div class="mb-4">
-        <label class="label">Split Type</label>
-        <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
+        <fieldset>
+          <legend class="label">Split Type</legend>
+          <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
           <label class="flex items-center gap-2 p-2 -m-2 cursor-pointer">
             <input
               type="radio"
@@ -161,12 +162,13 @@ async function handleAddExpense() {
             />
             <span class="text-sm sm:text-base">Custom Split</span>
           </label>
-        </div>
+          </div>
+        </fieldset>
       </div>
 
       {#if splitType === "random" && amount}
         <div class="mb-4">
-          <label class="label">Random Split Info</label>
+          <p class="label">Random Split Info</p>
           <p class="text-sm text-gray-600">
             The expense will be randomly split among all members. Each member will get a random portion of the total amount.
           </p>
@@ -175,7 +177,7 @@ async function handleAddExpense() {
 
       {#if splitType === "custom"}
         <div class="mb-4">
-          <label class="label">Custom Amounts</label>
+          <p class="label">Custom Amounts</p>
           <div class="space-y-3">
             {#each sortedMembers as member}
               <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
