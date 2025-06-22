@@ -4,7 +4,7 @@ import { createDatabaseAdapter } from "./database/factory";
 
 // Create DynamoDB adapter for local development
 const dbConfig = {
-	region: process.env.AWS_REGION || "us-east-1",
+	region: process.env.AWS_REGION || "ap-southeast-1",
 	tableName: process.env.TABLE_NAME || "splitfool-local",
 };
 

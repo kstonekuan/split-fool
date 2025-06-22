@@ -115,7 +115,7 @@ docker-compose down -v
 ### API Service
 - `NODE_ENV` - Environment (development/production)
 - `PORT` - API server port (default: 3000)
-- `AWS_REGION` - AWS region for DynamoDB (default: us-east-1)
+- `AWS_REGION` - AWS region for DynamoDB (default: ap-southeast-1)
 - `AWS_ACCESS_KEY_ID` - AWS access key (use "local" for local DynamoDB)
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key (use "local" for local DynamoDB)
 - `DYNAMODB_ENDPOINT` - DynamoDB endpoint URL

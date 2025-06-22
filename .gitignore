@@ -10,6 +10,7 @@ build/
 .svelte-kit/
 *.db
 *.db-journal
+dist.zip
 
 # Environment
 .env
@@ -45,6 +46,20 @@ worker-configuration.d.ts
 # AWS
 .aws-sam/
 samconfig.toml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+tfplan
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+crash.log
+crash.*.log
 
 # TypeScript
 *.tsbuildinfo

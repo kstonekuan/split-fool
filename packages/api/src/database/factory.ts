@@ -2,7 +2,7 @@ import { ElectroDBAdapter } from "./electrodb-adapter";
 import type { DatabaseAdapter, DatabaseConfig } from "./types";
 
 export function createDatabaseAdapter(config: DatabaseConfig): DatabaseAdapter {
-	const region = config.region || process.env.AWS_REGION || "us-east-1";
+	const region = config.region || process.env.AWS_REGION || "ap-southeast-1";
 	const tableName = config.tableName || process.env.TABLE_NAME || "splitfool";
 
 	// For local development, use DynamoDB Local

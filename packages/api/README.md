@@ -44,7 +44,7 @@ The SAM template will create:
 ### Local Development
 - `PORT` - Server port (default: 3000)
 - `TABLE_NAME` - DynamoDB table name (default: splitfool-local)
-- `AWS_REGION` - AWS region (default: us-east-1)
+- `AWS_REGION` - AWS region (default: ap-southeast-1)
 - `DYNAMODB_ENDPOINT` - DynamoDB endpoint (default: http://localhost:8000)
 
 ### AWS Lambda

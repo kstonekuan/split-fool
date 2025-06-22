@@ -9,7 +9,7 @@ async function testDatabase() {
 	process.env.TABLE_NAME = "splitfool-local";
 
 	const db = createDatabaseAdapter({
-		region: "us-east-1",
+		region: "ap-southeast-1",
 		tableName: "splitfool-local",
 	});
 

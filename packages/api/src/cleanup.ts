@@ -2,7 +2,7 @@ import type { ScheduledHandler } from "aws-lambda";
 import { createDatabaseAdapter } from "./database/factory";
 
 const dbConfig = {
-	region: process.env.AWS_REGION || "us-east-1",
+	region: process.env.AWS_REGION || "ap-southeast-1",
 	tableName: process.env.TABLE_NAME || "splitfool",
 };
 
