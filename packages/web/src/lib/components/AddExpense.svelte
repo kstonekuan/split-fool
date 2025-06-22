@@ -17,6 +17,9 @@ export let members: Member[];
 export let groupCode: string;
 export let onRefresh: (() => void) | undefined = undefined;
 
+// Sort members alphabetically
+$: sortedMembers = [...members].sort((a, b) => a.name.localeCompare(b.name));
+
 let payerId = "";
 let amount = "";
 let description = "";
@@ -94,7 +97,7 @@ async function handleAddExpense() {
         <label for="payer" class="label">Who Paid?</label>
         <select id="payer" class="input" bind:value={payerId} disabled={loading}>
           <option value="">Select member</option>
-          {#each members as member}
+          {#each sortedMembers as member}
             <option value={member.id}>{member.name}</option>
           {/each}
         </select>
@@ -174,7 +177,7 @@ async function handleAddExpense() {
         <div class="mb-4">
           <label class="label">Custom Amounts</label>
           <div class="space-y-3">
-            {#each members as member}
+            {#each sortedMembers as member}
               <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <span class="text-sm font-medium sm:w-32">{member.name}:</span>
                 <input

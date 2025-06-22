@@ -4,7 +4,6 @@ import { getErrorMessage } from "../utils/error-handling";
 import { navigateToGroup } from "../utils/routing";
 import { validateGroupName } from "../utils/validation";
 
-// biome-ignore lint/style/useConst: This needs to be mutable for binding
 let groupName = "";
 let loading = false;
 let error = "";

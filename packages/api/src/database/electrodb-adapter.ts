@@ -157,9 +157,20 @@ export class ElectroDBAdapter implements DatabaseAdapter {
 			.byGroup({ groupId: groupCode })
 			.go();
 
-		// Sort by date descending (most recent first)
+		// Sort by date, then by creation time, then by id (most recent first)
 		return result.data
-			.sort((a, b) => b.date.localeCompare(a.date))
+			.sort((a, b) => {
+				// First sort by expense date
+				const dateCompare = b.date.localeCompare(a.date);
+				if (dateCompare !== 0) return dateCompare;
+
+				// Then by creation timestamp
+				const createdAtCompare = b.createdAt.localeCompare(a.createdAt);
+				if (createdAtCompare !== 0) return createdAtCompare;
+
+				// Finally by id as tiebreaker
+				return b.id.localeCompare(a.id);
+			})
 			.map((item) => ({
 				id: item.id,
 				groupId: item.groupId,

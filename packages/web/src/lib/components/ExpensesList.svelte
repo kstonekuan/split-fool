@@ -11,6 +11,26 @@ export let members: Member[];
 export let groupCode: string;
 export let onRefresh: (() => void) | undefined = undefined;
 
+// Sort expenses by date, then by creation time, then by id (newest first)
+$: sortedExpenses = [...expenses].sort((a, b) => {
+	// First sort by date (the expense date, not creation time)
+	const expenseDateA = new Date(a.date).getTime();
+	const expenseDateB = new Date(b.date).getTime();
+	if (expenseDateA !== expenseDateB) {
+		return expenseDateB - expenseDateA;
+	}
+
+	// Then sort by creation timestamp (includes time)
+	const createdAtA = new Date(a.createdAt).getTime();
+	const createdAtB = new Date(b.createdAt).getTime();
+	if (createdAtA !== createdAtB) {
+		return createdAtB - createdAtA;
+	}
+
+	// Finally use id as tiebreaker (lexicographic order, reversed)
+	return b.id.localeCompare(a.id);
+});
+
 let showDeleteModal = false;
 let expenseToDelete: string | null = null;
 let showErrorModal = false;
@@ -54,7 +74,7 @@ async function handleDeleteExpense() {
     <p class="text-gray-500 text-sm sm:text-base">No expenses yet.</p>
   {:else}
     <div class="flex flex-col gap-2">
-      {#each expenses as expense}
+      {#each sortedExpenses as expense}
         <div class="border border-gray-200 rounded-lg overflow-hidden">
           <button
             class="w-full p-4 text-left hover:bg-gray-50 active:bg-gray-50 transition-colors min-h-[60px] sm:p-3"

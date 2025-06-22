@@ -10,12 +10,10 @@ export let onCancel: (() => void) | undefined = undefined;
 
 function handleConfirm() {
 	onConfirm?.();
-	show = false;
 }
 
 function handleCancel() {
 	onCancel?.();
-	show = false;
 }
 
 function handleBackdropClick(event: MouseEvent) {

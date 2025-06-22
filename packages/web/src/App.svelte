@@ -1,19 +1,12 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { api } from "./lib/api/client";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import CreateGroup from "./lib/components/CreateGroup.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import ExpensesPage from "./lib/components/ExpensesPage.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import GroupHeader from "./lib/components/GroupHeader.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import JoinGroup from "./lib/components/JoinGroup.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import MembersManage from "./lib/components/MembersManage.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import NavigationHeader from "./lib/components/NavigationHeader.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import OverviewPage from "./lib/components/OverviewPage.svelte";
 import Toast from "./lib/components/Toast.svelte";
 import { currentGroup, error, loading } from "./lib/stores/group";
@@ -93,6 +86,8 @@ async function loadGroup() {
         balances={$currentGroup.balances}
         settlements={$currentGroup.settlements}
         members={$currentGroup.members}
+        groupCode={$currentGroup.group.code}
+        onRefresh={loadGroup}
       />
     {/if}
   {:else}

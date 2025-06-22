@@ -4,6 +4,17 @@ import { formatBalance, formatCurrency } from "../utils/formatters";
 
 export let balances: Balance[];
 export let settlements: Settlement[];
+export let onSettleDebt: ((settlement: Settlement) => void) | undefined =
+	undefined;
+export let onCustomSettle: (() => void) | undefined = undefined;
+
+function handleSettleDebt(settlement: Settlement) {
+	onSettleDebt?.(settlement);
+}
+
+function handleCustomSettle() {
+	onCustomSettle?.();
+}
 </script>
 
 <div class="card">
@@ -29,19 +40,39 @@ export let settlements: Settlement[];
 
     {#if settlements.length > 0}
       <div>
-        <h3 class="font-semibold mb-3 text-sm sm:text-base">Simplified Settlements</h3>
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-semibold text-sm sm:text-base">Simplified Settlements</h3>
+        </div>
         <div class="-mx-2 sm:mx-0">
           {#each settlements as settlement}
-            <div class="py-3 px-2 border-b text-sm sm:py-2 sm:text-base">
-              <span class="font-medium">{settlement.fromMemberName}</span>
-              <span class="text-secondary"> owes </span>
-              <span class="font-medium">{settlement.toMemberName}</span>
-              <span class="font-bold text-primary"> {formatCurrency(settlement.amount)}</span>
+            <div class="py-3 px-2 border-b text-sm sm:py-2 sm:text-base flex justify-between items-center">
+              <div>
+                <span class="font-medium">{settlement.fromMemberName}</span>
+                <span class="text-secondary"> owes </span>
+                <span class="font-medium">{settlement.toMemberName}</span>
+                <span class="font-bold text-primary"> {formatCurrency(settlement.amount)}</span>
+              </div>
+              <button 
+                class="btn btn-secondary btn-small"
+                on:click={() => handleSettleDebt(settlement)}
+                type="button"
+              >
+                Settle
+              </button>
             </div>
           {/each}
         </div>
       </div>
     {/if}
+    
+    <div class="mt-4 pt-4 border-t">
+      <button 
+        class="btn btn-primary w-full"
+        on:click={handleCustomSettle}
+      >
+        Record Settlement
+      </button>
+    </div>
   {/if}
 </div>
 

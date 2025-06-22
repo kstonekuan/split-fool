@@ -8,6 +8,9 @@ export let members: Member[];
 export let groupCode: string;
 export let onRefresh: (() => void) | undefined = undefined;
 
+// Sort members alphabetically
+$: sortedMembers = [...members].sort((a, b) => a.name.localeCompare(b.name));
+
 let newMemberName = "";
 let loading = false;
 let error = "";
