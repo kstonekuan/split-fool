@@ -1,0 +1,58 @@
+services:
+  # DynamoDB Local for development/testing
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: splitfool-dynamodb
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_DEFAULT_REGION=us-east-1
+    networks:
+      - splitfool-network
+
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    container_name: splitfool-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+      - TABLE_NAME=splitfool
+    depends_on:
+      - dynamodb
+    networks:
+      - splitfool-network
+    restart: unless-stopped
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      dockerfile: packages/web/Dockerfile
+    container_name: splitfool-web
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - splitfool-network
+    restart: unless-stopped
+
+
+networks:
+  splitfool-network:
+    driver: bridge
+
+volumes:
+  dynamodb-data:

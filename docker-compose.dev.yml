@@ -1,0 +1,71 @@
+services:
+  # DynamoDB Local for development
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: splitfool-dynamodb-dev
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - dynamodb-dev-data:/data
+    networks:
+      - splitfool-dev-network
+
+  # API Service with hot reload
+  api:
+    image: node:20-alpine
+    container_name: splitfool-api-dev
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/packages/shared/node_modules
+      - /app/packages/api/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+      - TABLE_NAME=splitfool-dev
+    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && sleep 3 && pnpm --filter @split-fool/api dev"
+    depends_on:
+      - dynamodb
+    networks:
+      - splitfool-dev-network
+
+  # Web Frontend with hot reload
+  web:
+    image: node:20-alpine
+    container_name: splitfool-web-dev
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/packages/shared/node_modules
+      - /app/packages/web/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm --filter @split-fool/web dev --host"
+    depends_on:
+      - api
+    networks:
+      - splitfool-dev-network
+
+
+networks:
+  splitfool-dev-network:
+    driver: bridge
+
+volumes:
+  dynamodb-dev-data:

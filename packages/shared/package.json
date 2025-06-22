@@ -1,0 +1,22 @@
+{
+	"name": "@split-fool/shared",
+	"version": "1.0.0",
+	"description": "Shared types and utilities for SplitFool",
+	"private": true,
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"typecheck": "tsc --noEmit",
+		"lint": "biome check . --write",
+		"format": "biome check . --write"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"packageManager": "pnpm@10.11.0",
+	"devDependencies": {
+		"@biomejs/biome": "2.0.2",
+		"typescript": "5.8.3"
+	}
+}

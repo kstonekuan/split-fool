@@ -1,0 +1,23 @@
+name = "splitfool"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "pnpm build"
+
+[build.upload]
+format = "service-worker"
+
+[[build.upload.rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
+
+[[build.upload.rules]]
+type = "Text"
+globs = ["**/*.txt", "**/*.html"]
+fallthrough = true
+
+[[build.upload.rules]]
+type = "Data"
+globs = ["**/*.bin"]
+fallthrough = true

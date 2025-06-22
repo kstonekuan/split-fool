@@ -1,0 +1,23 @@
+{
+  "name": "split-fool",
+  "version": "1.0.0",
+  "description": "Open source expense tracking app",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter '*' dev",
+    "build": "pnpm --filter '*' build",
+    "typecheck": "pnpm --filter '*' typecheck",
+    "lint": "pnpm --filter '*' lint",
+    "format": "pnpm --filter '*' format"
+  },
+  "keywords": [
+    "expense-tracking",
+    "splitwise-alternative"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.0.2"
+  }
+}
