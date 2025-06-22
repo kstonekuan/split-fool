@@ -14,7 +14,7 @@
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
 		"build:cf": "vite build --mode production",
-		"deploy:cf": "pnpm build:cf && wrangler pages deploy dist --project-name=split-fool"
+		"deploy:cf": "pnpm build:cf && wrangler pages deploy dist --project-name=splitfool"
 	},
 	"dependencies": {
 		"@split-fool/shared": "workspace:*"
