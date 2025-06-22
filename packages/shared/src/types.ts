@@ -25,6 +25,10 @@ export interface Expense {
 	updatedAt: string;
 }
 
+export interface ExpenseWithSplits extends Expense {
+	splits: ExpenseSplit[];
+}
+
 export interface ExpenseSplit {
 	id: string;
 	expenseId: string;
@@ -73,7 +77,7 @@ export interface CreateExpenseRequest {
 export interface GroupDetailsResponse {
 	group: Group;
 	members: Member[];
-	expenses: Expense[];
+	expenses: ExpenseWithSplits[];
 	balances: Balance[];
 	settlements: Settlement[];
 }

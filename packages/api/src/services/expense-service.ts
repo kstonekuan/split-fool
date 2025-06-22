@@ -3,9 +3,10 @@ import type {
 	CreateExpenseRequest,
 	Expense,
 	ExpenseSplit,
+	ExpenseWithSplits,
 	Settlement,
 } from "@split-fool/shared";
-import { calculateBalances, calculateSettlements } from "@split-fool/shared";
+import { calculateSettlements } from "@split-fool/shared";
 import { format } from "date-fns";
 import { nanoid } from "nanoid";
 import type { DatabaseAdapter } from "../database/types";
@@ -50,6 +51,21 @@ export class ExpenseService {
 
 	async getExpenses(groupId: string): Promise<Expense[]> {
 		return this.db.getExpenses(groupId);
+	}
+
+	async getExpensesWithSplits(groupId: string): Promise<ExpenseWithSplits[]> {
+		const expenses = await this.db.getExpenses(groupId);
+		const expensesWithSplits: ExpenseWithSplits[] = [];
+		
+		for (const expense of expenses) {
+			const splits = await this.db.getSplits(groupId, expense.id);
+			expensesWithSplits.push({
+				...expense,
+				splits
+			});
+		}
+		
+		return expensesWithSplits;
 	}
 
 	async deleteExpense(groupId: string, expenseId: string): Promise<void> {

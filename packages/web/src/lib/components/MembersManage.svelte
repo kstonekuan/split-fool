@@ -12,7 +12,6 @@ import Modal from "./Modal.svelte";
 
 export let members: Member[];
 export let groupCode: string;
-export let onBack: () => void;
 export let onRefresh: (() => void) | undefined = undefined;
 
 let newMemberName = "";
@@ -77,12 +76,6 @@ async function deleteMember() {
 </script>
 
 <div class="card">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold">Manage Members</h2>
-    <button class="btn btn-secondary" on:click={onBack}>
-      Back to View
-    </button>
-  </div>
 
   <form on:submit|preventDefault={addMember} class="mb-4">
     <div class="flex gap-2">

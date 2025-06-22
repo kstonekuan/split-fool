@@ -6,6 +6,7 @@ import type { CustomSplits } from "../types";
 import { getErrorMessage } from "../utils/error-handling";
 import {
 	calculateEqualSplitsWithMembers,
+	calculateRandomSplitsWithMembers,
 	parseSplitAmounts,
 	validateCustomSplits,
 	validateExpenseForm,
@@ -19,7 +20,7 @@ export let onRefresh: (() => void) | undefined = undefined;
 let payerId = "";
 let amount = "";
 let description = "";
-let splitType: "equal" | "custom" = "equal";
+let splitType: "equal" | "random" | "custom" = "equal";
 let customSplits: CustomSplits = {};
 let loading = false;
 let error = "";
@@ -44,6 +45,8 @@ async function handleAddExpense() {
 
 	if (splitType === "equal") {
 		splits = calculateEqualSplitsWithMembers(totalAmount, members);
+	} else if (splitType === "random") {
+		splits = calculateRandomSplitsWithMembers(totalAmount, members);
 	} else {
 		const customValidation = validateCustomSplits(customSplits, totalAmount);
 		if (!customValidation.isValid) {
@@ -138,6 +141,15 @@ async function handleAddExpense() {
             <input
               type="radio"
               bind:group={splitType}
+              value="random"
+              disabled={loading}
+            />
+            Random Split
+          </label>
+          <label class="flex items-center gap-2">
+            <input
+              type="radio"
+              bind:group={splitType}
               value="custom"
               disabled={loading}
             />
@@ -145,6 +157,15 @@ async function handleAddExpense() {
           </label>
         </div>
       </div>
+
+      {#if splitType === "random" && amount}
+        <div class="mb-4">
+          <label class="label">Random Split Info</label>
+          <p class="text-sm text-gray-600">
+            The expense will be randomly split among all members. Each member will get a random portion of the total amount.
+          </p>
+        </div>
+      {/if}
 
       {#if splitType === "custom"}
         <div class="mb-4">

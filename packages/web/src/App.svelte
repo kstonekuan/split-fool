@@ -2,23 +2,19 @@
 import { onMount } from "svelte";
 import { api } from "./lib/api/client";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import AddExpense from "./lib/components/AddExpense.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import Balances from "./lib/components/Balances.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import CreateGroup from "./lib/components/CreateGroup.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import ExpensesList from "./lib/components/ExpensesList.svelte";
+import ExpensesPage from "./lib/components/ExpensesPage.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import GroupHeader from "./lib/components/GroupHeader.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import JoinGroup from "./lib/components/JoinGroup.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import MembersList from "./lib/components/MembersList.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import MembersManage from "./lib/components/MembersManage.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import MembersView from "./lib/components/MembersView.svelte";
+import NavigationHeader from "./lib/components/NavigationHeader.svelte";
+// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
+import OverviewPage from "./lib/components/OverviewPage.svelte";
 import Toast from "./lib/components/Toast.svelte";
 import { currentGroup, error, loading } from "./lib/stores/group";
 import { toast } from "./lib/stores/toast";
@@ -26,7 +22,11 @@ import { getErrorMessage, isNotFoundError } from "./lib/utils/error-handling";
 import { extractGroupCodeFromPath, redirectToHome } from "./lib/utils/routing";
 
 let groupCode: string | null = null;
-let showMembersManage = false;
+let currentPage: "overview" | "expenses" | "members" = "overview";
+
+function navigateTo(page: "overview" | "expenses" | "members") {
+	currentPage = page;
+}
 
 onMount(() => {
 	// Check if we have a group code in the URL
@@ -73,38 +73,27 @@ async function loadGroup() {
   {:else if $currentGroup}
     <GroupHeader group={$currentGroup.group} />
     
-    {#if showMembersManage}
+    <NavigationHeader currentPage={currentPage} onNavigate={navigateTo} />
+    
+    {#if currentPage === 'members'}
       <MembersManage
         members={$currentGroup.members}
         groupCode={$currentGroup.group.code}
         onRefresh={loadGroup}
-        onBack={() => showMembersManage = false}
+      />
+    {:else if currentPage === 'expenses'}
+      <ExpensesPage
+        expenses={$currentGroup.expenses}
+        members={$currentGroup.members}
+        groupCode={$currentGroup.group.code}
+        onRefresh={loadGroup}
       />
     {:else}
-      <MembersView
+      <OverviewPage
+        balances={$currentGroup.balances}
+        settlements={$currentGroup.settlements}
         members={$currentGroup.members}
-        onEdit={() => showMembersManage = true}
       />
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <AddExpense
-          members={$currentGroup.members}
-          groupCode={$currentGroup.group.code}
-          onRefresh={loadGroup}
-        />
-        
-        <ExpensesList
-          expenses={$currentGroup.expenses}
-          members={$currentGroup.members}
-          groupCode={$currentGroup.group.code}
-          onRefresh={loadGroup}
-        />
-        
-        <Balances
-          balances={$currentGroup.balances}
-          settlements={$currentGroup.settlements}
-        />
-      </div>
     {/if}
   {:else}
     <div class="text-center mt-4">

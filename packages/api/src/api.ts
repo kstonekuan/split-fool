@@ -5,7 +5,6 @@ import type {
 	CreateMemberResponse,
 	GetExpenseSplitsResponse,
 	GetExpensesResponse,
-	GetGroupResponse,
 	GetMembersResponse,
 	GroupDetailsResponse,
 } from "@split-fool/shared";
@@ -73,7 +72,7 @@ export function createApp(db: DatabaseAdapter) {
 
 				// Get all related data
 				const members = await memberService.getMembers(group.id);
-				const expenses = await expenseService.getExpenses(group.id);
+				const expenses = await expenseService.getExpensesWithSplits(group.id);
 				const balances = await expenseService.getBalances(group.id);
 				const settlements = await expenseService.getSettlements(group.id);
 

@@ -43,6 +43,52 @@ export function calculateEqualSplitsWithMembers(
 }
 
 /**
+ * Calculate random splits with member IDs
+ * @param totalAmount - The total amount to split
+ * @param members - Array of members
+ * @returns Array of split amounts with member IDs
+ */
+export function calculateRandomSplitsWithMembers(
+	totalAmount: number,
+	members: Member[],
+): SplitAmount[] {
+	if (members.length === 0) return [];
+	if (members.length === 1) {
+		return [{ memberId: members[0].id, amount: totalAmount }];
+	}
+
+	// Generate random weights for each member
+	const weights = members.map(() => Math.random());
+	const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+
+	// Calculate splits based on weights
+	const splits = members.map((member, index) => {
+		const share = (weights[index] / totalWeight) * totalAmount;
+		return {
+			memberId: member.id,
+			amount: Math.round(share * 100) / 100,
+		};
+	});
+
+	// Adjust for rounding differences
+	const currentTotal = splits.reduce((sum, s) => sum + s.amount, 0);
+	const difference = Math.round((totalAmount - currentTotal) * 100) / 100;
+
+	if (difference !== 0) {
+		// Add the difference to the largest split
+		const maxIndex = splits.reduce(
+			(maxIdx, split, idx, arr) =>
+				split.amount > arr[maxIdx].amount ? idx : maxIdx,
+			0,
+		);
+		splits[maxIndex].amount =
+			Math.round((splits[maxIndex].amount + difference) * 100) / 100;
+	}
+
+	return splits;
+}
+
+/**
  * Parse custom split amounts from string inputs
  * @param customSplits - Object with member IDs as keys and amount strings as values
  * @returns Array of split amounts
