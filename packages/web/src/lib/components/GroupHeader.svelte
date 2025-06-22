@@ -17,6 +17,9 @@ function handleCopyCode() {
 <div class="card mb-4">
   <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
     <div class="flex-1">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs text-gray-500 font-medium">SplitFool</span>
+      </div>
       <h1 class="text-xl font-bold sm:text-2xl">{group.name}</h1>
       <div class="flex items-center gap-2 mt-2">
         <span class="text-sm text-secondary sm:text-base">Code:</span>
