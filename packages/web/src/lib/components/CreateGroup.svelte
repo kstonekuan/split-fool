@@ -1,27 +1,31 @@
 <script lang="ts">
 import { api } from "../api/client";
+import { getErrorMessage } from "../utils/error-handling";
+import { navigateToGroup } from "../utils/routing";
+import { validateGroupName } from "../utils/validation";
 
 // biome-ignore lint/style/useConst: This needs to be mutable for binding
 let groupName = "";
-let _loading = false;
-let _error = "";
+let loading = false;
+let error = "";
 
-async function _createGroup() {
-	if (!groupName.trim()) {
-		_error = "Group name is required";
+async function handleCreateGroup() {
+	const validation = validateGroupName(groupName);
+	if (!validation.isValid) {
+		error = validation.error || "";
 		return;
 	}
 
-	_loading = true;
-	_error = "";
+	loading = true;
+	error = "";
 
 	try {
 		const response = await api.createGroup({ name: groupName });
-		window.location.href = `/${response.group.code}`;
+		navigateToGroup(response.group.code);
 	} catch (err) {
-		_error = err instanceof Error ? err.message : "Failed to create group";
+		error = getErrorMessage(err);
 	} finally {
-		_loading = false;
+		loading = false;
 	}
 }
 </script>
@@ -29,7 +33,7 @@ async function _createGroup() {
 <div class="card">
   <h2 class="text-xl font-bold mb-4">Create a New Group</h2>
   
-  <form on:submit|preventDefault={_createGroup}>
+  <form on:submit|preventDefault={handleCreateGroup}>
     <div class="mb-4">
       <label for="groupName" class="label">Group Name</label>
       <input
@@ -38,15 +42,15 @@ async function _createGroup() {
         class="input"
         bind:value={groupName}
         placeholder="Enter group name"
-        disabled={_loading}
+        disabled={loading}
       />
-      {#if _error}
-        <p class="error">{_error}</p>
+      {#if error}
+        <p class="error">{error}</p>
       {/if}
     </div>
 
-    <button type="submit" class="btn btn-primary" disabled={_loading}>
-      {_loading ? "Creating..." : "Create Group"}
+    <button type="submit" class="btn btn-primary" disabled={loading}>
+      {loading ? "Creating..." : "Create Group"}
     </button>
   </form>
 </div>

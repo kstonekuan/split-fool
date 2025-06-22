@@ -1,15 +1,19 @@
 <script lang="ts">
 import type { Member } from "@split-fool/shared";
-import { createEventDispatcher } from "svelte";
 import { api } from "../api/client";
-import Modal from "./Modal.svelte";
 import { toast } from "../stores/toast";
+import { getErrorMessage } from "../utils/error-handling";
+import { getMemberInitials } from "../utils/formatters";
+import {
+	isDuplicateMemberName,
+	validateMemberName,
+} from "../utils/member-utils";
+import Modal from "./Modal.svelte";
 
 export let members: Member[];
 export let groupCode: string;
 export let onBack: () => void;
-
-const dispatch = createEventDispatcher();
+export let onRefresh: (() => void) | undefined = undefined;
 
 let newMemberName = "";
 let loading = false;
@@ -21,18 +25,16 @@ let errorMessage = "";
 
 async function addMember() {
 	const trimmedName = newMemberName.trim();
-	
-	if (!trimmedName) {
-		error = "Member name is required";
+
+	// Validate member name
+	const validation = validateMemberName(trimmedName);
+	if (!validation.isValid) {
+		error = validation.error || "";
 		return;
 	}
 
 	// Check for duplicate names on client side
-	const nameExists = members.some(
-		member => member.name.toLowerCase() === trimmedName.toLowerCase()
-	);
-	
-	if (nameExists) {
+	if (isDuplicateMemberName(trimmedName, members)) {
 		error = `A member named "${trimmedName}" already exists`;
 		return;
 	}
@@ -44,9 +46,9 @@ async function addMember() {
 		await api.createMember(groupCode, { name: trimmedName });
 		newMemberName = "";
 		toast.success(`Added ${trimmedName} to the group`);
-		dispatch("refresh");
+		onRefresh?.();
 	} catch (err) {
-		error = err instanceof Error ? err.message : "Failed to add member";
+		error = getErrorMessage(err);
 	} finally {
 		loading = false;
 	}
@@ -63,9 +65,9 @@ async function deleteMember() {
 	try {
 		await api.deleteMember(groupCode, memberToDelete);
 		toast.success("Member deleted successfully");
-		dispatch("refresh");
+		onRefresh?.();
 	} catch (err) {
-		errorMessage = err instanceof Error ? err.message : "Failed to delete member";
+		errorMessage = getErrorMessage(err);
 		showErrorModal = true;
 	} finally {
 		memberToDelete = null;
@@ -110,7 +112,7 @@ async function deleteMember() {
         <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-              {member.name.charAt(0).toUpperCase()}
+              {getMemberInitials(member.name)}
             </div>
             <span class="font-medium">{member.name}</span>
           </div>
@@ -133,8 +135,8 @@ async function deleteMember() {
 	type="confirm"
 	confirmText="Remove"
 	cancelText="Cancel"
-	on:confirm={deleteMember}
-	on:cancel={() => showDeleteModal = false}
+	onConfirm={deleteMember}
+	onCancel={() => showDeleteModal = false}
 />
 
 <Modal
@@ -142,5 +144,5 @@ async function deleteMember() {
 	title="Error"
 	message={errorMessage}
 	type="error"
-	on:confirm={() => showErrorModal = false}
+	onConfirm={() => showErrorModal = false}
 />

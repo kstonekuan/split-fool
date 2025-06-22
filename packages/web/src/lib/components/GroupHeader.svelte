@@ -3,10 +3,14 @@ import type { Group } from "@split-fool/shared";
 
 export let group: Group;
 
-function _copyCode() {
+let copied = false;
+
+function handleCopyCode() {
 	navigator.clipboard.writeText(group.code);
-	// In a real app, you'd show a toast notification here
-	alert("Code copied to clipboard!");
+	copied = true;
+	setTimeout(() => {
+		copied = false;
+	}, 2000);
 }
 </script>
 
@@ -17,8 +21,20 @@ function _copyCode() {
       <div class="flex items-center gap-2 mt-2">
         <span class="text-secondary">Group Code:</span>
         <code class="font-bold text-lg">{group.code}</code>
-        <button class="btn btn-secondary" on:click={_copyCode} style="padding: 0.25rem 0.5rem;">
-          Copy
+        <button 
+          class="p-1 text-gray-500 hover:text-gray-700 transition-colors" 
+          on:click={handleCopyCode}
+          title="Copy code"
+        >
+          {#if copied}
+            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          {:else}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          {/if}
         </button>
       </div>
     </div>

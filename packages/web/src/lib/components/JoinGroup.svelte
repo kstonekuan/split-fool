@@ -1,27 +1,26 @@
 <script lang="ts">
+import { navigateToGroup } from "../utils/routing";
+import { formatGroupCode, validateGroupCode } from "../utils/validation";
+
 // biome-ignore lint/style/useConst: This needs to be mutable for binding
 let groupCode = "";
-let _error = "";
+let error = "";
 
-function _joinGroup() {
-	if (!groupCode.trim()) {
-		_error = "Group code is required";
+function handleJoinGroup() {
+	const validation = validateGroupCode(groupCode);
+	if (!validation.isValid) {
+		error = validation.error || "";
 		return;
 	}
 
-	if (groupCode.length !== 6) {
-		_error = "Group code must be 6 characters";
-		return;
-	}
-
-	window.location.href = `/${groupCode.toUpperCase()}`;
+	navigateToGroup(formatGroupCode(groupCode));
 }
 </script>
 
 <div class="card mt-4">
   <h2 class="text-xl font-bold mb-4">Join Existing Group</h2>
   
-  <form on:submit|preventDefault={_joinGroup}>
+  <form on:submit|preventDefault={handleJoinGroup}>
     <div class="mb-4">
       <label for="groupCode" class="label">Group Code</label>
       <input
@@ -33,8 +32,8 @@ function _joinGroup() {
         maxlength="6"
         style="text-transform: uppercase"
       />
-      {#if _error}
-        <p class="error">{_error}</p>
+      {#if error}
+        <p class="error">{error}</p>
       {/if}
     </div>
 

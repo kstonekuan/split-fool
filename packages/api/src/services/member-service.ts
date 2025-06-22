@@ -12,11 +12,13 @@ export class MemberService {
 		// Check if member with same name already exists in this group
 		const existingMembers = await this.db.getMembers(groupId);
 		const nameExists = existingMembers.some(
-			member => member.name.toLowerCase() === data.name.toLowerCase()
+			(member) => member.name.toLowerCase() === data.name.toLowerCase(),
 		);
-		
+
 		if (nameExists) {
-			throw new Error(`A member named "${data.name}" already exists in this group`);
+			throw new Error(
+				`A member named "${data.name}" already exists in this group`,
+			);
 		}
 
 		const id = nanoid();

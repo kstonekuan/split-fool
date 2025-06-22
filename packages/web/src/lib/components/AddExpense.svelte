@@ -1,46 +1,41 @@
 <script lang="ts">
 import type { Member } from "@split-fool/shared";
-import { createEventDispatcher } from "svelte";
 import { api } from "../api/client";
 import { toast } from "../stores/toast";
+import type { CustomSplits } from "../types";
+import { getErrorMessage } from "../utils/error-handling";
+import {
+	calculateEqualSplitsWithMembers,
+	parseSplitAmounts,
+	validateCustomSplits,
+	validateExpenseForm,
+} from "../utils/expense-calculations";
+import { updateCustomSplitsForMembers } from "../utils/state-helpers";
 
 export let members: Member[];
 export let groupCode: string;
-
-const dispatch = createEventDispatcher();
+export let onRefresh: (() => void) | undefined = undefined;
 
 let payerId = "";
 let amount = "";
 let description = "";
 let splitType: "equal" | "custom" = "equal";
-let customSplits: { [memberId: string]: string } = {};
-let _loading = false;
-let _error = "";
+let customSplits: CustomSplits = {};
+let loading = false;
+let error = "";
 
 // Initialize custom splits
 $: if (members.length > 0) {
-	members.forEach((member) => {
-		if (!customSplits[member.id]) {
-			customSplits[member.id] = "";
-		}
-	});
+	customSplits = updateCustomSplitsForMembers(customSplits, members);
 }
 
-async function _addExpense() {
-	_error = "";
+async function handleAddExpense() {
+	error = "";
 
-	if (!payerId) {
-		_error = "Please select who paid";
-		return;
-	}
-
-	if (!amount || parseFloat(amount) <= 0) {
-		_error = "Please enter a valid amount";
-		return;
-	}
-
-	if (!description.trim()) {
-		_error = "Please enter a description";
+	// Validate form inputs
+	const validation = validateExpenseForm(payerId, amount, description);
+	if (!validation.isValid) {
+		error = validation.error || "";
 		return;
 	}
 
@@ -48,33 +43,17 @@ async function _addExpense() {
 	let splits: Array<{ memberId: string; amount: number }> = [];
 
 	if (splitType === "equal") {
-		const splitAmount = totalAmount / members.length;
-		splits = members.map((member) => ({
-			memberId: member.id,
-			amount: Math.round(splitAmount * 100) / 100,
-		}));
+		splits = calculateEqualSplitsWithMembers(totalAmount, members);
 	} else {
-		splits = [];
-		let totalSplit = 0;
-
-		for (const [memberId, splitAmount] of Object.entries(customSplits)) {
-			const parsedAmount = parseFloat(splitAmount) || 0;
-			if (parsedAmount > 0) {
-				splits.push({
-					memberId,
-					amount: parsedAmount,
-				});
-				totalSplit += parsedAmount;
-			}
-		}
-
-		if (Math.abs(totalSplit - totalAmount) > 0.01) {
-			_error = `Splits must sum to ${totalAmount.toFixed(2)} (currently: ${totalSplit.toFixed(2)})`;
+		const customValidation = validateCustomSplits(customSplits, totalAmount);
+		if (!customValidation.isValid) {
+			error = customValidation.error || "";
 			return;
 		}
+		splits = parseSplitAmounts(customSplits);
 	}
 
-	_loading = true;
+	loading = true;
 
 	try {
 		await api.createExpense(groupCode, {
@@ -92,11 +71,11 @@ async function _addExpense() {
 		customSplits = {};
 
 		toast.success("Expense added successfully");
-		dispatch("refresh");
+		onRefresh?.();
 	} catch (err) {
-		_error = err instanceof Error ? err.message : "Failed to add expense";
+		error = getErrorMessage(err);
 	} finally {
-		_loading = false;
+		loading = false;
 	}
 }
 </script>
@@ -107,10 +86,10 @@ async function _addExpense() {
   {#if members.length < 2}
     <p class="text-gray-500">Add at least 2 members to start tracking expenses.</p>
   {:else}
-    <form on:submit|preventDefault={_addExpense}>
+    <form on:submit|preventDefault={handleAddExpense}>
       <div class="mb-4">
         <label for="payer" class="label">Who Paid?</label>
-        <select id="payer" class="input" bind:value={payerId} disabled={_loading}>
+        <select id="payer" class="input" bind:value={payerId} disabled={loading}>
           <option value="">Select member</option>
           {#each members as member}
             <option value={member.id}>{member.name}</option>
@@ -127,7 +106,7 @@ async function _addExpense() {
           class="input"
           bind:value={amount}
           placeholder="0.00"
-          disabled={_loading}
+          disabled={loading}
         />
       </div>
 
@@ -139,7 +118,7 @@ async function _addExpense() {
           class="input"
           bind:value={description}
           placeholder="What was this expense for?"
-          disabled={_loading}
+          disabled={loading}
         />
       </div>
 
@@ -151,7 +130,7 @@ async function _addExpense() {
               type="radio"
               bind:group={splitType}
               value="equal"
-              disabled={_loading}
+              disabled={loading}
             />
             Split Equally
           </label>
@@ -160,7 +139,7 @@ async function _addExpense() {
               type="radio"
               bind:group={splitType}
               value="custom"
-              disabled={_loading}
+              disabled={loading}
             />
             Custom Split
           </label>
@@ -179,7 +158,7 @@ async function _addExpense() {
                 class="input"
                 bind:value={customSplits[member.id]}
                 placeholder="0.00"
-                disabled={_loading}
+                disabled={loading}
                 style="width: 150px;"
               />
             </div>
@@ -187,12 +166,12 @@ async function _addExpense() {
         </div>
       {/if}
 
-      {#if _error}
-        <p class="error mb-4">{_error}</p>
+      {#if error}
+        <p class="error mb-4">{error}</p>
       {/if}
 
-      <button type="submit" class="btn btn-primary" disabled={_loading}>
-        {_loading ? "Adding..." : "Add Expense"}
+      <button type="submit" class="btn btn-primary" disabled={loading}>
+        {loading ? "Adding..." : "Add Expense"}
       </button>
     </form>
   {/if}

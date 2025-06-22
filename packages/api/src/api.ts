@@ -122,13 +122,13 @@ export function createApp(db: DatabaseAdapter) {
 		async (c) => {
 			try {
 				const { code } = c.req.valid("param");
-				
+
 				// Get group to get its ID
 				const group = await groupService.getGroup(code);
 				if (!group) {
 					return c.json({ error: "Group not found" }, 404);
 				}
-				
+
 				const members = await memberService.getMembers(group.id);
 				return c.json<GetMembersResponse>({ members });
 			} catch (error) {
@@ -144,13 +144,13 @@ export function createApp(db: DatabaseAdapter) {
 		async (c) => {
 			try {
 				const { code, memberId } = c.req.valid("param");
-				
+
 				// Get group to get its ID
 				const group = await groupService.getGroup(code);
 				if (!group) {
 					return c.json({ error: "Group not found" }, 404);
 				}
-				
+
 				await memberService.deleteMember(group.id, memberId);
 				return c.json({ success: true });
 			} catch (error) {
@@ -191,13 +191,13 @@ export function createApp(db: DatabaseAdapter) {
 		async (c) => {
 			try {
 				const { code } = c.req.valid("param");
-				
+
 				// Get group to get its ID
 				const group = await groupService.getGroup(code);
 				if (!group) {
 					return c.json({ error: "Group not found" }, 404);
 				}
-				
+
 				const expenses = await expenseService.getExpenses(group.id);
 				return c.json<GetExpensesResponse>({ expenses });
 			} catch (error) {
@@ -213,13 +213,13 @@ export function createApp(db: DatabaseAdapter) {
 		async (c) => {
 			try {
 				const { code, expenseId } = c.req.valid("param");
-				
+
 				// Get group to get its ID
 				const group = await groupService.getGroup(code);
 				if (!group) {
 					return c.json({ error: "Group not found" }, 404);
 				}
-				
+
 				const splits = await expenseService.getSplits(group.id, expenseId);
 				return c.json<GetExpenseSplitsResponse>({ splits });
 			} catch (error) {
@@ -235,13 +235,13 @@ export function createApp(db: DatabaseAdapter) {
 		async (c) => {
 			try {
 				const { code, expenseId } = c.req.valid("param");
-				
+
 				// Get group to get its ID
 				const group = await groupService.getGroup(code);
 				if (!group) {
 					return c.json({ error: "Group not found" }, 404);
 				}
-				
+
 				await expenseService.deleteExpense(group.id, expenseId);
 				return c.json({ success: true });
 			} catch (error) {

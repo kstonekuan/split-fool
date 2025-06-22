@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Balance, Settlement } from "@split-fool/shared";
+import { formatBalance, formatCurrency } from "../utils/formatters";
 
 export let balances: Balance[];
 export let settlements: Settlement[];
@@ -16,9 +17,9 @@ export let settlements: Settlement[];
       {#each balances as balance}
         <div class="flex justify-between items-center py-2 border-b">
           <span>{balance.memberName}</span>
-          <span class:text-green-600={balance.balance > 0} class:text-red-600={balance.balance < 0}>
-            ${Math.abs(balance.balance).toFixed(2)}
-            {balance.balance > 0 ? "(to receive)" : balance.balance < 0 ? "(to pay)" : ""}
+          <span class:text-green-600={formatBalance(balance.balance).isPositive} class:text-red-600={balance.balance < 0}>
+            {formatBalance(balance.balance).amount}
+            {formatBalance(balance.balance).status}
           </span>
         </div>
       {/each}
@@ -32,7 +33,7 @@ export let settlements: Settlement[];
             <span class="font-medium">{settlement.fromMemberName}</span>
             <span class="text-secondary"> owes </span>
             <span class="font-medium">{settlement.toMemberName}</span>
-            <span class="font-bold text-primary"> ${settlement.amount.toFixed(2)}</span>
+            <span class="font-bold text-primary"> {formatCurrency(settlement.amount)}</span>
           </div>
         {/each}
       </div>

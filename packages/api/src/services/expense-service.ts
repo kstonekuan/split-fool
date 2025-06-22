@@ -57,10 +57,7 @@ export class ExpenseService {
 		await this.db.deleteExpense(groupId, expenseId);
 	}
 
-	async getSplits(
-		groupId: string,
-		expenseId: string,
-	): Promise<ExpenseSplit[]> {
+	async getSplits(groupId: string, expenseId: string): Promise<ExpenseSplit[]> {
 		return this.db.getSplits(groupId, expenseId);
 	}
 
@@ -77,7 +74,7 @@ export class ExpenseService {
 		// Calculate balances from all expenses and splits
 		for (const expense of expenses) {
 			const splits = await this.db.getSplits(groupId, expense.id);
-			
+
 			// Payer paid the full amount (positive balance)
 			const currentPayerBalance = balanceMap.get(expense.payerId) || 0;
 			balanceMap.set(expense.payerId, currentPayerBalance + expense.amount);
@@ -92,7 +89,7 @@ export class ExpenseService {
 		// Convert to Balance array with member names
 		const balances: Balance[] = [];
 		for (const [memberId, balance] of balanceMap.entries()) {
-			const member = members.find(m => m.id === memberId);
+			const member = members.find((m) => m.id === memberId);
 			if (member) {
 				balances.push({
 					memberId,

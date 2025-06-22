@@ -16,21 +16,22 @@ import JoinGroup from "./lib/components/JoinGroup.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import MembersList from "./lib/components/MembersList.svelte";
 // biome-ignore lint/correctness/noUnusedImports: These components are used in the template
-import MembersView from "./lib/components/MembersView.svelte";
-// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
 import MembersManage from "./lib/components/MembersManage.svelte";
+// biome-ignore lint/correctness/noUnusedImports: These components are used in the template
+import MembersView from "./lib/components/MembersView.svelte";
 import Toast from "./lib/components/Toast.svelte";
 import { currentGroup, error, loading } from "./lib/stores/group";
 import { toast } from "./lib/stores/toast";
+import { getErrorMessage, isNotFoundError } from "./lib/utils/error-handling";
+import { extractGroupCodeFromPath, redirectToHome } from "./lib/utils/routing";
 
 let groupCode: string | null = null;
 let showMembersManage = false;
 
 onMount(() => {
 	// Check if we have a group code in the URL
-	const path = window.location.pathname.slice(1);
-	if (path && path.length === 6) {
-		groupCode = path.toUpperCase();
+	groupCode = extractGroupCodeFromPath(window.location.pathname);
+	if (groupCode) {
 		loadGroup();
 	}
 });
@@ -47,12 +48,11 @@ async function loadGroup() {
 		const data = await api.getGroup(groupCode);
 		currentGroup.set(data);
 	} catch (err) {
-		error.set(err instanceof Error ? err.message : "Failed to load group");
+		const errorMessage = getErrorMessage(err);
+		error.set(errorMessage);
 		// If group not found, redirect to home
-		if (err instanceof Error && err.message.includes("not found")) {
-			setTimeout(() => {
-				window.location.href = "/";
-			}, 2000);
+		if (isNotFoundError(err)) {
+			redirectToHome(2000);
 		}
 	} finally {
 		loading.set(false);
@@ -77,7 +77,7 @@ async function loadGroup() {
       <MembersManage
         members={$currentGroup.members}
         groupCode={$currentGroup.group.code}
-        on:refresh={loadGroup}
+        onRefresh={loadGroup}
         onBack={() => showMembersManage = false}
       />
     {:else}
@@ -90,14 +90,14 @@ async function loadGroup() {
         <AddExpense
           members={$currentGroup.members}
           groupCode={$currentGroup.group.code}
-          on:refresh={loadGroup}
+          onRefresh={loadGroup}
         />
         
         <ExpensesList
           expenses={$currentGroup.expenses}
           members={$currentGroup.members}
           groupCode={$currentGroup.group.code}
-          on:refresh={loadGroup}
+          onRefresh={loadGroup}
         />
         
         <Balances

@@ -12,7 +12,11 @@ function createToastStore() {
 
 	return {
 		subscribe,
-		show(message: string, type: "success" | "error" | "info" = "info", duration = 3000) {
+		show(
+			message: string,
+			type: "success" | "error" | "info" = "info",
+			duration = 3000,
+		) {
 			const id = Math.random().toString(36).substr(2, 9);
 			const toast: ToastMessage = { id, message, type, duration };
 

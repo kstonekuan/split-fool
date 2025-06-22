@@ -1,22 +1,20 @@
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
-
 export let show = false;
 export let title = "";
 export let message = "";
 export let type: "info" | "error" | "confirm" = "info";
 export let confirmText = "OK";
 export let cancelText = "Cancel";
-
-const dispatch = createEventDispatcher();
+export let onConfirm: (() => void) | undefined = undefined;
+export let onCancel: (() => void) | undefined = undefined;
 
 function handleConfirm() {
-	dispatch("confirm");
+	onConfirm?.();
 	show = false;
 }
 
 function handleCancel() {
-	dispatch("cancel");
+	onCancel?.();
 	show = false;
 }
 
