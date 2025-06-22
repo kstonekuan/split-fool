@@ -62,10 +62,6 @@ export async function ensureTableExists(
 					StreamEnabled: true,
 					StreamViewType: "NEW_AND_OLD_IMAGES",
 				},
-				TimeToLiveSpecification: {
-					AttributeName: "ttl",
-					Enabled: true,
-				},
 			}),
 		);
 

@@ -22,7 +22,6 @@ export function calculateBalances(
 	expenses: Expense[],
 	splits: ExpenseSplit[],
 ): MemberBalance[] {
-	const memberMap = new Map(members.map((m) => [m.id, m]));
 	const balances = new Map<string, MemberBalance>();
 
 	// Initialize balances for all members

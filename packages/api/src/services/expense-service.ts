@@ -56,15 +56,15 @@ export class ExpenseService {
 	async getExpensesWithSplits(groupId: string): Promise<ExpenseWithSplits[]> {
 		const expenses = await this.db.getExpenses(groupId);
 		const expensesWithSplits: ExpenseWithSplits[] = [];
-		
+
 		for (const expense of expenses) {
 			const splits = await this.db.getSplits(groupId, expense.id);
 			expensesWithSplits.push({
 				...expense,
-				splits
+				splits,
 			});
 		}
-		
+
 		return expensesWithSplits;
 	}
 
