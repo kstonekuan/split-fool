@@ -18,7 +18,7 @@ function handleJoinGroup() {
 </script>
 
 <div class="card mt-4">
-  <h2 class="text-xl font-bold mb-4">Join Existing Group</h2>
+  <h2 class="text-lg font-bold mb-3 sm:text-xl sm:mb-4">Join Existing Group</h2>
   
   <form on:submit|preventDefault={handleJoinGroup}>
     <div class="mb-4">

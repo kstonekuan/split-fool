@@ -73,18 +73,17 @@ async function handleDeleteMember() {
 </script>
 
 <div class="card">
-  <h2 class="text-xl font-bold mb-4">Members</h2>
+  <h2 class="text-lg font-bold mb-3 sm:text-xl sm:mb-4">Members</h2>
 
   {#if members.length === 0}
-    <p class="text-secondary">No members yet. Add the first member!</p>
+    <p class="text-secondary text-sm sm:text-base">No members yet. Add the first member!</p>
   {:else}
-    <ul class="mb-4">
+    <ul class="mb-4 -mx-2 sm:mx-0">
       {#each members as member}
-        <li class="flex justify-between items-center py-2 border-b">
-          <span>{member.name}</span>
+        <li class="flex justify-between items-center py-3 px-2 border-b hover:bg-gray-50 sm:py-2 sm:hover:bg-transparent">
+          <span class="text-sm font-medium sm:text-base">{member.name}</span>
           <button
-            class="btn btn-danger"
-            style="padding: 0.25rem 0.5rem; font-size: 0.75rem;"
+            class="btn btn-danger btn-small"
             on:click={() => confirmDelete(member.id)}
           >
             Delete
@@ -94,16 +93,16 @@ async function handleDeleteMember() {
     </ul>
   {/if}
 
-  <form on:submit|preventDefault={handleAddMember} class="flex gap-2">
+  <form on:submit|preventDefault={handleAddMember} class="flex flex-col gap-3 sm:flex-row sm:gap-2">
     <input
       type="text"
-      class="input"
+      class="input flex-1"
       bind:value={newMemberName}
       placeholder="Enter member name"
       disabled={loading}
     />
-    <button type="submit" class="btn btn-primary" disabled={loading}>
-      {loading ? "Adding..." : "Add"}
+    <button type="submit" class="btn btn-primary w-full sm:w-auto" disabled={loading}>
+      {loading ? "Adding..." : "Add Member"}
     </button>
   </form>
   

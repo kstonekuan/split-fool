@@ -26,24 +26,28 @@ function handleBackdropClick(event: MouseEvent) {
 </script>
 
 {#if show}
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] animate-fadeIn" on:click={handleBackdropClick}>
-	<div class="bg-white rounded-lg shadow-xl max-w-lg w-[90%] max-h-[90vh] overflow-auto animate-slideIn">
-		<div class="p-6 border-b border-gray-200">
-			<h3 class="text-xl font-semibold text-gray-900">{title}</h3>
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-[1000] animate-fadeIn sm:items-center" 
+     on:click={handleBackdropClick}
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modal-title">
+	<div class="bg-white rounded-t-2xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-auto animate-slideUp sm:rounded-lg sm:w-[90%] sm:animate-slideIn">
+		<div class="p-4 border-b border-gray-200 sm:p-6">
+			<h3 id="modal-title" class="text-lg font-semibold text-gray-900 sm:text-xl">{title}</h3>
 		</div>
-		<div class="p-6">
-			<p class="text-gray-700">{message}</p>
+		<div class="p-4 sm:p-6">
+			<p class="text-gray-700 text-sm sm:text-base">{message}</p>
 		</div>
-		<div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+		<div class="px-4 py-3 border-t border-gray-200 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:px-6 sm:py-4">
 			{#if type === "confirm"}
-				<button class="btn btn-secondary" on:click={handleCancel}>
+				<button class="btn btn-secondary w-full sm:w-auto" on:click={handleCancel}>
 					{cancelText}
 				</button>
-				<button class="btn btn-primary" on:click={handleConfirm}>
+				<button class="btn btn-primary w-full sm:w-auto" on:click={handleConfirm}>
 					{confirmText}
 				</button>
 			{:else}
-				<button class="btn btn-primary" on:click={handleConfirm}>
+				<button class="btn btn-primary w-full sm:w-auto" on:click={handleConfirm}>
 					{confirmText}
 				</button>
 			{/if}
@@ -73,11 +77,24 @@ function handleBackdropClick(event: MouseEvent) {
 	}
 }
 
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
 .animate-fadeIn {
 	animation: fadeIn 0.2s ease-out;
 }
 
 .animate-slideIn {
 	animation: slideIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+	animation: slideUp 0.3s ease-out;
 }
 </style>

@@ -96,9 +96,9 @@ async function loadGroup() {
       />
     {/if}
   {:else}
-    <div class="text-center mt-4">
-      <h1 class="text-2xl font-bold mb-4">Welcome to SplitFool</h1>
-      <p class="text-gray-600 mb-4">Track and split expenses with your group</p>
+    <div class="text-center mt-8 px-4 sm:mt-4">
+      <h1 class="text-2xl font-bold mb-3 sm:text-3xl sm:mb-4">Welcome to SplitFool</h1>
+      <p class="text-gray-600 mb-6 text-sm sm:text-base sm:mb-4">Track and split expenses with your group</p>
     </div>
     
     <CreateGroup />

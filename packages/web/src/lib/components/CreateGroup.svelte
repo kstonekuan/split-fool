@@ -31,7 +31,7 @@ async function handleCreateGroup() {
 </script>
 
 <div class="card">
-  <h2 class="text-xl font-bold mb-4">Create a New Group</h2>
+  <h2 class="text-lg font-bold mb-3 sm:text-xl sm:mb-4">Create a New Group</h2>
   
   <form on:submit|preventDefault={handleCreateGroup}>
     <div class="mb-4">

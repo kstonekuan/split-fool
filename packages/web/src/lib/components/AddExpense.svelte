@@ -127,33 +127,36 @@ async function handleAddExpense() {
 
       <div class="mb-4">
         <label class="label">Split Type</label>
-        <div class="flex gap-4">
-          <label class="flex items-center gap-2">
+        <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <label class="flex items-center gap-2 p-2 -m-2 cursor-pointer">
             <input
               type="radio"
               bind:group={splitType}
               value="equal"
               disabled={loading}
+              class="w-4 h-4"
             />
-            Split Equally
+            <span class="text-sm sm:text-base">Split Equally</span>
           </label>
-          <label class="flex items-center gap-2">
+          <label class="flex items-center gap-2 p-2 -m-2 cursor-pointer">
             <input
               type="radio"
               bind:group={splitType}
               value="random"
               disabled={loading}
+              class="w-4 h-4"
             />
-            Random Split
+            <span class="text-sm sm:text-base">Random Split</span>
           </label>
-          <label class="flex items-center gap-2">
+          <label class="flex items-center gap-2 p-2 -m-2 cursor-pointer">
             <input
               type="radio"
               bind:group={splitType}
               value="custom"
               disabled={loading}
+              class="w-4 h-4"
             />
-            Custom Split
+            <span class="text-sm sm:text-base">Custom Split</span>
           </label>
         </div>
       </div>
@@ -170,20 +173,21 @@ async function handleAddExpense() {
       {#if splitType === "custom"}
         <div class="mb-4">
           <label class="label">Custom Amounts</label>
-          {#each members as member}
-            <div class="flex items-center gap-2 mb-2">
-              <span style="width: 150px;">{member.name}:</span>
-              <input
-                type="number"
-                step="0.01"
-                class="input"
-                bind:value={customSplits[member.id]}
-                placeholder="0.00"
-                disabled={loading}
-                style="width: 150px;"
-              />
-            </div>
-          {/each}
+          <div class="space-y-3">
+            {#each members as member}
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <span class="text-sm font-medium sm:w-32">{member.name}:</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  class="input flex-1 sm:max-w-[150px]"
+                  bind:value={customSplits[member.id]}
+                  placeholder="0.00"
+                  disabled={loading}
+                />
+              </div>
+            {/each}
+          </div>
         </div>
       {/if}
 

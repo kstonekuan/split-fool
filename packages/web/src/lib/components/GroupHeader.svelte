@@ -15,14 +15,14 @@ function handleCopyCode() {
 </script>
 
 <div class="card mb-4">
-  <div class="flex justify-between items-center">
-    <div>
-      <h1 class="text-2xl font-bold">{group.name}</h1>
+  <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+    <div class="flex-1">
+      <h1 class="text-xl font-bold sm:text-2xl">{group.name}</h1>
       <div class="flex items-center gap-2 mt-2">
-        <span class="text-secondary">Group Code:</span>
-        <code class="font-bold text-lg">{group.code}</code>
+        <span class="text-sm text-secondary sm:text-base">Code:</span>
+        <code class="font-bold text-base sm:text-lg">{group.code}</code>
         <button 
-          class="p-1 text-gray-500 hover:text-gray-700 transition-colors" 
+          class="p-2 -m-1 text-gray-500 hover:text-gray-700 active:text-gray-700 transition-colors min-w-[44px] min-h-[44px] inline-flex items-center justify-center sm:p-1 sm:min-w-0 sm:min-h-0" 
           on:click={handleCopyCode}
           title="Copy code"
         >
@@ -38,8 +38,8 @@ function handleCopyCode() {
         </button>
       </div>
     </div>
-    <a href="/" class="btn btn-secondary">
-      Back to Home
+    <a href="/" class="btn btn-secondary btn-small sm:btn">
+      Back
     </a>
   </div>
 </div>

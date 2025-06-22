@@ -48,27 +48,28 @@ async function handleDeleteExpense() {
 </script>
 
 <div class="card">
-  <h2 class="text-xl font-bold mb-4">Expenses</h2>
+  <h2 class="text-lg font-bold mb-3 sm:text-xl sm:mb-4">Expenses</h2>
 
   {#if expenses.length === 0}
-    <p class="text-gray-500">No expenses yet.</p>
+    <p class="text-gray-500 text-sm sm:text-base">No expenses yet.</p>
   {:else}
     <div class="flex flex-col gap-2">
       {#each expenses as expense}
         <div class="border border-gray-200 rounded-lg overflow-hidden">
           <button
-            class="w-full p-3 text-left hover:bg-gray-50 transition-colors"
+            class="w-full p-4 text-left hover:bg-gray-50 active:bg-gray-50 transition-colors min-h-[60px] sm:p-3"
             on:click={() => toggleExpense(expense.id)}
           >
-            <div class="flex justify-between items-start">
-              <div class="flex-1">
-                <p class="font-bold">{expense.description}</p>
-                <p class="text-gray-600 text-sm">
-                  Paid by {getMemberName(expense.payerId, members)} • ${expense.amount.toFixed(2)}
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm sm:text-base truncate">{expense.description}</p>
+                <p class="text-gray-600 text-xs mt-1 sm:text-sm">
+                  {getMemberName(expense.payerId, members)} paid
                 </p>
-                <p class="text-gray-600 text-sm">{formatDate(expense.date)}</p>
+                <p class="text-gray-900 font-medium text-sm mt-0.5 sm:text-base">${expense.amount.toFixed(2)}</p>
+                <p class="text-gray-500 text-xs mt-1 sm:text-sm">{formatDate(expense.date)}</p>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center p-1">
                 <svg 
                   class="w-5 h-5 text-gray-400 transition-transform {expandedExpenseId === expense.id ? 'rotate-180' : ''}"
                   fill="none" 
@@ -82,22 +83,22 @@ async function handleDeleteExpense() {
           </button>
           
           {#if expandedExpenseId === expense.id}
-            <div class="border-t border-gray-200 bg-gray-50 p-3">
-              <h4 class="font-semibold text-sm mb-2">Split Details:</h4>
-              <div class="space-y-1 mb-3">
+            <div class="border-t border-gray-200 bg-gray-50 p-4 sm:p-3">
+              <h4 class="font-semibold text-sm mb-3 sm:mb-2">Split Details:</h4>
+              <div class="space-y-2 mb-3 sm:space-y-1">
                 {#each expense.splits as split}
                   <div class="flex justify-between text-sm">
-                    <span>{getMemberName(split.memberId, members)}</span>
-                    <span class="font-mono">${split.amount.toFixed(2)}</span>
+                    <span class="text-gray-700">{getMemberName(split.memberId, members)}</span>
+                    <span class="font-medium font-mono">${split.amount.toFixed(2)}</span>
                   </div>
                 {/each}
               </div>
-              <div class="text-xs text-gray-500 border-t pt-2">
+              <div class="text-xs text-gray-500 border-t pt-3 sm:pt-2">
                 Total: ${expense.amount.toFixed(2)} paid by {getMemberName(expense.payerId, members)}
               </div>
-              <div class="mt-3 pt-3 border-t border-gray-200">
+              <div class="mt-4 pt-4 border-t border-gray-200 sm:mt-3 sm:pt-3">
                 <button
-                  class="btn btn-danger btn-small"
+                  class="btn btn-danger btn-small w-full sm:w-auto"
                   on:click|stopPropagation={() => confirmDelete(expense.id)}
                 >
                   Delete Expense
