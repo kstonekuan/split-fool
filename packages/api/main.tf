@@ -65,7 +65,7 @@ resource "aws_lambda_function" "api" {
   filename         = "dist.zip"
   function_name    = "splitfool-api"
   role            = aws_iam_role.lambda_role.arn
-  handler         = "lambda.handler"
+  handler         = "aws-lambda.handler"
   source_code_hash = filebase64sha256("dist.zip")
   runtime         = "nodejs20.x"
   memory_size     = 128

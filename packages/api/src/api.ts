@@ -9,7 +9,6 @@ import type {
 	GroupDetailsResponse,
 } from "@split-fool/shared";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { DatabaseAdapter } from "./database/types";
 import { ExpenseService } from "./services/expense-service";
@@ -33,7 +32,7 @@ export function createApp(db: DatabaseAdapter) {
 	const expenseService = new ExpenseService(db);
 
 	// Middleware
-	app.use("*", cors());
+	// CORS is handled by Lambda Function URL configuration
 	app.use("*", logger());
 
 	// Health check

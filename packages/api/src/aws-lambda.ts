@@ -1,4 +1,4 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
+import type { Context } from "aws-lambda";
 import { createApp } from "./api";
 import { createDatabaseAdapter } from "./database/factory";
 
@@ -10,14 +10,17 @@ const dbConfig = {
 const db = createDatabaseAdapter(dbConfig);
 const app = createApp(db);
 
-// Convert API Gateway event to Request object
-function createRequest(event: APIGatewayProxyEvent): Request {
-	const url = `https://${event.headers.Host}${event.path}`;
-	const method = event.httpMethod;
+// Convert Lambda Function URL event to Request object
+function createRequest(event: any): Request {
+	// Lambda Function URL format
+	const host = event.headers?.host || event.headers?.Host || 'localhost';
+	const path = event.rawPath || event.path || '/';
+	const url = `https://${host}${path}`;
+	const method = event.requestContext?.http?.method || event.httpMethod || 'GET';
 
 	const headers = new Headers();
 	for (const [key, value] of Object.entries(event.headers || {})) {
-		if (value) {
+		if (value && typeof value === 'string') {
 			headers.set(key, value);
 		}
 	}
@@ -36,8 +39,8 @@ function createRequest(event: APIGatewayProxyEvent): Request {
 	return new Request(url, options);
 }
 
-// Convert Response object to API Gateway response
-async function createAPIGatewayResponse(response: Response) {
+// Convert Response object to Lambda response
+async function createLambdaResponse(response: Response) {
 	const body = await response.text();
 
 	const headers: { [key: string]: string } = {};
@@ -52,11 +55,11 @@ async function createAPIGatewayResponse(response: Response) {
 	};
 }
 
-export const handler: APIGatewayProxyHandler = async (event, _context) => {
+export const handler = async (event: any, _context: Context) => {
 	try {
 		const request = createRequest(event);
 		const response = await app.fetch(request);
-		return await createAPIGatewayResponse(response);
+		return await createLambdaResponse(response);
 	} catch (error) {
 		console.error("Lambda handler error:", error);
 		return {

@@ -25,19 +25,16 @@ docker-compose -f docker-compose.dev.yml up
 ## Deploy to AWS Lambda
 
 ```bash
-# Build the Lambda bundle
-pnpm build:aws
-
-# Deploy using AWS SAM
-sam build
-sam deploy --guided
+# Deploy using Terraform
+./deploy.sh
 ```
 
-The SAM template will create:
-- API Gateway
-- Lambda function
-- DynamoDB table with TTL
-- Scheduled cleanup function
+The Terraform configuration will create:
+- Lambda function with Function URL
+- DynamoDB table with TTL and GSI
+- IAM roles and policies
+- EventBridge rule for daily cleanup
+- CloudWatch alarms for monitoring
 
 ## Environment Variables
 
@@ -48,8 +45,8 @@ The SAM template will create:
 - `DYNAMODB_ENDPOINT` - DynamoDB endpoint (default: http://localhost:8000)
 
 ### AWS Lambda
-- `TABLE_NAME` - DynamoDB table name (set by SAM template)
-- `AWS_REGION` - AWS region (set by Lambda runtime)
+- `TABLE_NAME` - DynamoDB table name (set by Terraform)
+- `AWS_REGION` - AWS region (default: ap-southeast-1)
 
 ## API Endpoints
 
@@ -69,9 +66,9 @@ The SAM template will create:
 The API uses a single-table design with:
 - **Partition Key (PK)**: `GROUP#<code>`
 - **Sort Key (SK)**: Entity-specific patterns
-- **Global Secondary Index**: For efficient expense queries
+- **Global Secondary Index (GSI1)**: For efficient expense queries
 - **TTL**: Automatic 30-day cleanup
-- **Pay-per-request billing**: No capacity planning needed
+- **Provisioned billing**: 25 RCU/WCU for free tier optimization
 
 ### Key Patterns
 - Groups: `PK: GROUP#<code>, SK: GROUP#INFO`
@@ -84,7 +81,7 @@ The API uses a single-table design with:
 This implementation is optimized for AWS Free Tier:
 - DynamoDB: 25 GB storage, 25 read/write capacity units
 - Lambda: 1M requests, 400,000 GB-seconds per month
-- API Gateway: 1M API calls per month
+- Lambda Function URLs: No additional cost
 
 The single-table design minimizes read/write operations to stay within free tier limits.
 
