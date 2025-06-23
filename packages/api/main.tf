@@ -68,13 +68,14 @@ resource "aws_lambda_function" "api" {
   handler         = "aws-lambda.handler"
   source_code_hash = filebase64sha256("dist.zip")
   runtime         = "nodejs20.x"
-  memory_size     = 128
+  memory_size     = 512  # Increased from 128 MB for better performance
   timeout         = 30
 
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.main.name
       NODE_OPTIONS = "--enable-source-maps"
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED = "1"  # Reuse HTTP connections
     }
   }
 }
@@ -101,6 +102,9 @@ resource "aws_lambda_function" "cleanup" {
 resource "aws_lambda_function_url" "api_url" {
   function_name      = aws_lambda_function.api.function_name
   authorization_type = "NONE"
+  
+  # Consider adding invoke_mode = "RESPONSE_STREAM" for streaming responses
+  # This can improve perceived performance for larger responses
 
   cors {
     allow_origins = ["*"]
