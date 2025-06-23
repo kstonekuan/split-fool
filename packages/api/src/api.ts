@@ -9,6 +9,7 @@ import type {
 	GroupDetailsResponse,
 } from "@split-fool/shared";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { DatabaseAdapter } from "./database/types";
 import { ExpenseService } from "./services/expense-service";
@@ -32,7 +33,11 @@ export function createApp(db: DatabaseAdapter) {
 	const expenseService = new ExpenseService(db);
 
 	// Middleware
-	// CORS is handled by Lambda Function URL configuration
+	// Add CORS only for local development (Lambda Function URL handles CORS in production)
+	const isLambda = !!(process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT || process.env.AWS_EXECUTION_ENV);
+	if (!isLambda) {
+		app.use("*", cors());
+	}
 	app.use("*", logger());
 
 	// Health check

@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { api } from "./lib/api/client";
 import CreateGroup from "./lib/components/CreateGroup.svelte";
 import ExpensesPage from "./lib/components/ExpensesPage.svelte";
+import Footer from "./lib/components/Footer.svelte";
 import GroupHeader from "./lib/components/GroupHeader.svelte";
 import JoinGroup from "./lib/components/JoinGroup.svelte";
 import MembersManage from "./lib/components/MembersManage.svelte";
@@ -53,6 +54,7 @@ async function loadGroup() {
 }
 </script>
 
+<div class="app-wrapper">
 <div class="container">
   {#if $loading}
     <div class="text-center mt-4">
@@ -108,3 +110,14 @@ async function loadGroup() {
     duration={toastMessage.duration}
   />
 {/each}
+
+<Footer />
+</div>
+
+<style>
+  .app-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+</style>
