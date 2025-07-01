@@ -28,7 +28,7 @@ pnpm lint
    - Build output directory: `dist`
    - Root directory: `packages/web`
 5. Add environment variable:
-   - `VITE_API_URL`: Your AWS API Gateway URL
+   - `VITE_API_URL`: Your AWS Lambda Function URL
 
 ### Option 2: Direct Deployment
 
@@ -54,7 +54,7 @@ pnpm lint
    - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
 
 2. Add this variable:
-   - `VITE_API_URL`: Your AWS API Gateway URL
+   - `VITE_API_URL`: Your AWS Lambda Function URL
 
 3. Push to main branch or trigger manually
 
@@ -67,8 +67,9 @@ VITE_API_URL=http://localhost:3000
 
 For production, set in Cloudflare Pages dashboard:
 ```env
-VITE_API_URL=https://your-api-id.execute-api.region.amazonaws.com/prod
+VITE_API_URL=https://<url-id>.lambda-url.<region>.on.aws/
 ```
+The production URL is an output of the `pnpm deploy:aws` command from the `packages/api` directory.
 
 ## Tech Stack
 
