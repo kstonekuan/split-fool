@@ -47,9 +47,7 @@ The API in `packages/api/` is built with:
 ### AWS Lambda Deployment
 - **Lambda Functions**: API endpoints with automatic scaling
 - **DynamoDB**: NoSQL database with single-table design
-- **API Gateway**: RESTful API management
 - **EventBridge**: Scheduled cleanup of old groups
-- Deploy with SAM: `./packages/api/scripts/deploy-aws.sh`
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
